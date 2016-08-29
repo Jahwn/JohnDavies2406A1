@@ -10,3 +10,4 @@ public class Card {
     public String crustal_abundance;
     public String economic_value;
 }
+
