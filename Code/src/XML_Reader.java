@@ -26,9 +26,14 @@ public class XML_Reader {
 
         DefaultHandler handler = new DefaultHandler() {
 
-            boolean stringDetected = false;
+            boolean stringDetected = false, cardDetected = false;
             //This method is called every time the parser gets an open tag "<"
             public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+
+                if(qName.equalsIgnoreCase("dict"))
+                {
+                    cardDetected = true;
+                }
 
                 if(qName.equalsIgnoreCase("string")) {
                     stringDetected = true;
@@ -45,6 +50,11 @@ public class XML_Reader {
                 if(stringDetected) {
                     System.out.println(new String(ch, start, length));
                     stringDetected = false;
+                }
+
+                if(cardDetected){
+                    System.out.println("CARD START!!!");
+                    cardDetected = false;
                 }
             }
         };
