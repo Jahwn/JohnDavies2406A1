@@ -14,8 +14,7 @@ public class Player {
 
     void print() {
         for (Card a: pCards) {
-            System.out.println(a.name);
-            System.out.println(a.crustalAbundance);
+            System.out.println(a.printHardness());
         }
     }
 }
