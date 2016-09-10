@@ -12,17 +12,17 @@ public abstract class Card {
         System.out.println(name);
     }
 
-    abstract int printHardness();
+    abstract String printHardness();
 }
 
 class MCard extends Card {
-    public int hardness;
-    public double specificGravity;
+    public String hardness;
+    public String specificGravity;
     public String cleavage;
     public String crustalAbundance;
     public String economicValue;
 
-    MCard(String name, int hardness, double specificGravity, String cleavage, String crustalAbundance, String economicValue) {
+    MCard(String name, String hardness, String specificGravity, String cleavage, String crustalAbundance, String economicValue) {
 
         super(name);
         this.hardness = hardness;
@@ -33,12 +33,12 @@ class MCard extends Card {
 
     }
 
-    public int getHardness() {
+    public String getHardness() {
         return hardness;
     }
 
     @Override
-    int printHardness() {
+    String printHardness() {
         return hardness;
     }
 }
@@ -50,8 +50,8 @@ class SCard extends Card {
     }
 
     @Override
-    int printHardness() {
-        return 0;
+    String printHardness() {
+        return "0";
     }
 }
 

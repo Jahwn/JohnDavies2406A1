@@ -10,7 +10,9 @@ import java.util.*;
 
 //Note: 11 strings in XML elements
 public class XML_Reader {
-    public static void main(String[] args) {
+    public ArrayList Reader() {
+
+        final ArrayList<String> CARD_DATA = new ArrayList<String>();
 
         //declare a SAX parser
         SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -26,15 +28,13 @@ public class XML_Reader {
 
         DefaultHandler handler = new DefaultHandler() {
 
-            boolean stringDetected = false, cardDetected = false;
+            boolean stringDetected = false, keyDetected = false;
             //This method is called every time the parser gets an open tag "<"
             public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
-                if(qName.equalsIgnoreCase("dict"))
-                {
-                    cardDetected = true;
+                if(qName.equalsIgnoreCase("key")) {
+                    keyDetected = true;
                 }
-
                 if(qName.equalsIgnoreCase("string")) {
                     stringDetected = true;
                 }
@@ -47,14 +47,13 @@ public class XML_Reader {
 
             //This method reads the contents of the "<" tags
             public void characters(char ch[], int start, int length) throws SAXException {
-                if(stringDetected) {
-                    System.out.println(new String(ch, start, length));
-                    stringDetected = false;
+                if(keyDetected) {
+                    CARD_DATA.add(new String(ch, start, length));
+                    keyDetected = false;
                 }
-
-                if(cardDetected){
-                    System.out.println("CARD START!!!");
-                    cardDetected = false;
+                if(stringDetected) {
+                    CARD_DATA.add(new String(ch, start, length));
+                    stringDetected = false;
                 }
             }
         };
@@ -66,5 +65,6 @@ public class XML_Reader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return CARD_DATA;
     }
 }
