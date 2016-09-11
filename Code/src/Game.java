@@ -20,11 +20,13 @@ public class Game {
         ArrayList<String> cardData = xml_reader.Reader();
 
         // Testing returned arraylist
-        while(deck.size() <= 54) {
+        while(deck.size() <= 60) {
             int n = 0;
+            // temporarily holds card data
             ArrayList<String> tempCardData = new ArrayList<String>();
+            // same as above but for super trump cards
+            ArrayList<String> tempSCardData = new ArrayList<String>();
             for (String s :cardData) {
-                // temporarily holds card data
                 if (s.equals("title")) {
                     tempCardData.add(cardData.get(n + 1));
                 }
@@ -43,16 +45,54 @@ public class Game {
                 if (s.equals("economic_value")) {
                     tempCardData.add(cardData.get(n + 1));
                 }
-                n++;
+                if (s.equals("The Miner")) {
+                    tempSCardData.add(s);
+                    tempSCardData.add(cardData.get(n + 2));
+                }
+                if (s.equals("The Petrologist")) {
+                    tempSCardData.add(s);
+                    tempSCardData.add(cardData.get(n + 2));
+                }
+                if (s.equals("The Gemmologist")) {
+                    tempSCardData.add(s);
+                    tempSCardData.add(cardData.get(n + 2));
+                }
+                if (s.equals("The Mineralogist")) {
+                    tempSCardData.add(s);
+                    tempSCardData.add(cardData.get(n + 2));
+                }
+                if (s.equals("The Geophysicist")) {
+                    tempSCardData.add(s);
+                    tempSCardData.add(cardData.get(n + 2));
+                }
+                if (s.equals("The Geologist")) {
+                    tempSCardData.add(s);
+                    tempSCardData.add(cardData.get(n + 2));
+                }
                 if (tempCardData.size() == 6) {
                     deck.add(new MCard(tempCardData.get(0), tempCardData.get(1), tempCardData.get(2), tempCardData.get(3), tempCardData.get(4), tempCardData.get(5)));
                     tempCardData.clear();
                 }
+                if (tempSCardData.size() == 2) {
+                    deck.add(new SCard(tempSCardData.get(0), tempSCardData.get(1)));
+                    tempSCardData.clear();
+                }
+                n++;
             }
         }
+        // Removing a particular card that stored unusual values... Does not compromise the deck however
+        deck.remove(deck.size() - 2);
+
+        // Testing cards in deck
         for(Card c: deck) {
             System.out.println(c.name);
-            System.out.println(c.printHardness());
+            System.out.println(c.getHardness());
+            System.out.println(c.getSpecificGravity());
+            System.out.println(c.getCleavage());
+            System.out.println(c.getCrustalAbundance());
+            System.out.println(c.getEconomicValue());
+            System.out.println(c.getCategory());
+            System.out.println();
         }
 
         String category;

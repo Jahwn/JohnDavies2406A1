@@ -12,7 +12,12 @@ public abstract class Card {
         System.out.println(name);
     }
 
-    abstract String printHardness();
+    abstract String getHardness();
+    abstract String getSpecificGravity();
+    abstract String getCleavage();
+    abstract String getCrustalAbundance();
+    abstract String getEconomicValue();
+    abstract String getCategory();
 }
 
 class MCard extends Card {
@@ -33,25 +38,55 @@ class MCard extends Card {
 
     }
 
-    public String getHardness() {
-        return hardness;
-    }
+    //public String getHardness() {
+       //return hardness;
+    //}
 
     @Override
-    String printHardness() {
+    String getHardness() {
         return hardness;
+    }
+    String getSpecificGravity() {
+        return specificGravity;
+    }
+    String getCleavage() {
+        return cleavage;
+    }
+    String getCrustalAbundance() {
+        return crustalAbundance;
+    }
+    String getEconomicValue() {
+        return economicValue;
+    }
+    String getCategory() {
+        return "N/A";
     }
 }
 class SCard extends Card {
-    public String description;
-    SCard(String name, String description) {
+    public String category;
+    SCard(String name, String category) {
         super(name);
-        this.description = description;
+        this.category = category;
     }
 
     @Override
-    String printHardness() {
-        return "0";
+    String getHardness() {
+        return "N/A";
+    }
+    String getSpecificGravity() {
+        return "N/A";
+    }
+    String getCleavage() {
+        return "N/A";
+    }
+    String getCrustalAbundance() {
+        return "N/A";
+    }
+    String getEconomicValue() {
+        return "N/A";
+    }
+    String getCategory() {
+        return category;
     }
 }
 

@@ -14,7 +14,7 @@ public class Player {
 
     void print() {
         for (Card a: pCards) {
-            System.out.println(a.printHardness());
+            System.out.println(a.getHardness());
         }
     }
 }
