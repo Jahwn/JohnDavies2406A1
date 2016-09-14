@@ -8,16 +8,16 @@ public abstract class Card {
         this.name = name;
     }
 
-    void print() {
-        System.out.println(name);
-    }
-
     abstract String getHardness();
     abstract String getSpecificGravity();
     abstract String getCleavage();
     abstract String getCrustalAbundance();
     abstract String getEconomicValue();
     abstract String getCategory();
+
+    public String getName() {
+        return "Card name: " + name;
+    }
 }
 
 class MCard extends Card {
@@ -44,22 +44,22 @@ class MCard extends Card {
 
     @Override
     String getHardness() {
-        return hardness;
+        return "Hardness: " + hardness;
     }
     String getSpecificGravity() {
-        return specificGravity;
+        return "Specific gravity: " + specificGravity;
     }
     String getCleavage() {
-        return cleavage;
+        return "Cleavage: " + cleavage;
     }
     String getCrustalAbundance() {
-        return crustalAbundance;
+        return "Crustal abundance: " + crustalAbundance;
     }
     String getEconomicValue() {
-        return economicValue;
+        return "Economic value: " +economicValue;
     }
     String getCategory() {
-        return "N/A";
+        return "Category: N/A";
     }
 }
 class SCard extends Card {
@@ -71,22 +71,22 @@ class SCard extends Card {
 
     @Override
     String getHardness() {
-        return "N/A";
+        return "Hardness: N/A";
     }
     String getSpecificGravity() {
-        return "N/A";
+        return "Specific gravity: N/A";
     }
     String getCleavage() {
-        return "N/A";
+        return "Cleavage: N/A";
     }
     String getCrustalAbundance() {
-        return "N/A";
+        return "Crustal abundance: N/A";
     }
     String getEconomicValue() {
-        return "N/A";
+        return "Economic value: N/A";
     }
     String getCategory() {
-        return category;
+        return "Category: " + category;
     }
 }
 
