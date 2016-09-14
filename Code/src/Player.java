@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created by John on 9/2/2016.
@@ -12,9 +12,26 @@ public class Player {
         this.pCards = pCards;
     }
 
-    void print() {
-        for (Card a: pCards) {
-            System.out.println(a.getHardness());
+    public Card getPlayerCard(int index) {
+        return pCards.get(index);
+    }
+
+    Scanner reader = new Scanner(System.in);
+
+    public Card playerTurn() {
+        if (pCards.size() != 0) {
+            Card cardChoice;
+            int n = 0;
+            System.out.println("Here is your cards:");
+            for (Card c: pCards) {
+                System.out.println(n + " " + c.getName());
+                n++;
+            }
+            System.out.print("Choose card by typing the number next to their name: ");
+            cardChoice = pCards.get(reader.nextInt());
+            return cardChoice;
+        } else {
+            return null;
         }
     }
 }

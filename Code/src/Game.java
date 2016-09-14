@@ -14,8 +14,12 @@ public class Game {
         ArrayList<Player> players = new ArrayList<Player>();
         ArrayList<Card> deck = new ArrayList<Card>();
 
-        // Testing returned arraylist
+        // Table will contain cards currently in play
+        ArrayList<Card> table = new ArrayList<Card>();
+
         deck = deckConstructor.ConstructDeck(deck);
+
+        // Will contain current category
         String category;
 
         JOptionPane.showMessageDialog(null, "Welcome to the Mineral Super Trumps Game!");
@@ -42,11 +46,12 @@ public class Game {
         }
 
         for (Player p: players) {
-            System.out.println("Player " + p.playerNo);
-            for (Card c: p.pCards) {
-                System.out.println(c.getName());
-            }
-            System.out.println();
+            System.out.println("Player " + p.playerNo + "'s turn");
+            table.add(p.playerTurn());
+        }
+
+        for (Card c: table) {
+            System.out.println(c.getName());
         }
 
         System.out.println(deck.size());
