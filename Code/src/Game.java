@@ -19,6 +19,10 @@ public class Game {
 
         deck = deckConstructor.ConstructDeck(deck);
 
+        for (Card c: deck) {
+            System.out.println(c.getName() + " Hardness: " + c.getHardness() + " Specific gravity: " + c.getSpecificGravity() + " Crustal Abundance: " + c.getCrustalAbundance());
+        }
+
         // Will contain current category
         String category;
 

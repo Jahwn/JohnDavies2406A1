@@ -22,7 +22,7 @@ public class Player {
         if (pCards.size() != 0) {
             Card cardChoice;
             int n = 0;
-            System.out.println("Here is your cards:");
+            System.out.println("Your card(s):");
             for (Card c: pCards) {
                 System.out.println(n + " " + c.getName());
                 n++;

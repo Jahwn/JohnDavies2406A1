@@ -8,10 +8,10 @@ public abstract class Card {
         this.name = name;
     }
 
-    abstract String getHardness();
-    abstract String getSpecificGravity();
+    abstract Double getHardness();
+    abstract Double getSpecificGravity();
     abstract String getCleavage();
-    abstract String getCrustalAbundance();
+    abstract Integer getCrustalAbundance();
     abstract String getEconomicValue();
     abstract String getCategory();
 
@@ -21,13 +21,13 @@ public abstract class Card {
 }
 
 class MCard extends Card {
-    public String hardness;
-    public String specificGravity;
+    public Double hardness;
+    public Double specificGravity;
     public String cleavage;
-    public String crustalAbundance;
+    public Integer crustalAbundance;
     public String economicValue;
 
-    MCard(String name, String hardness, String specificGravity, String cleavage, String crustalAbundance, String economicValue) {
+    MCard(String name, Double hardness, Double specificGravity, String cleavage, Integer crustalAbundance, String economicValue) {
 
         super(name);
         this.hardness = hardness;
@@ -43,17 +43,17 @@ class MCard extends Card {
     //}
 
     @Override
-    String getHardness() {
-        return "Hardness: " + hardness;
+    Double getHardness() {
+        return hardness;
     }
-    String getSpecificGravity() {
-        return "Specific gravity: " + specificGravity;
+    Double getSpecificGravity() {
+        return specificGravity;
     }
     String getCleavage() {
         return "Cleavage: " + cleavage;
     }
-    String getCrustalAbundance() {
-        return "Crustal abundance: " + crustalAbundance;
+    Integer getCrustalAbundance() {
+        return crustalAbundance;
     }
     String getEconomicValue() {
         return "Economic value: " +economicValue;
@@ -70,17 +70,17 @@ class SCard extends Card {
     }
 
     @Override
-    String getHardness() {
-        return "Hardness: N/A";
+    Double getHardness() {
+        return null;
     }
-    String getSpecificGravity() {
-        return "Specific gravity: N/A";
+    Double getSpecificGravity() {
+        return null;
     }
     String getCleavage() {
         return "Cleavage: N/A";
     }
-    String getCrustalAbundance() {
-        return "Crustal abundance: N/A";
+    Integer getCrustalAbundance() {
+        return null;
     }
     String getEconomicValue() {
         return "Economic value: N/A";
