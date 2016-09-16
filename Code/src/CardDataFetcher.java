@@ -24,22 +24,41 @@ public class CardDataFetcher {
         return specificGravity;
     }
 
-    public Integer getCrustalAbundance(String value) {
-        Integer crustalAbundance = 0;
+    public Double getCrustalAbundance(String value) {
+        Double crustalAbundance = 0.0;
         if (value.equals("ultratrace")) {
-            crustalAbundance = 0;
+            crustalAbundance = 0.0;
         } else if (value.equals("trace")) {
-            crustalAbundance = 1;
+            crustalAbundance = 1.0;
         } else if (value.equals("low")) {
-            crustalAbundance = 2;
+            crustalAbundance = 2.0;
         } else if (value.equals("moderate")) {
-            crustalAbundance = 3;
+            crustalAbundance = 3.0;
         } else if (value.equals("high")) {
-            crustalAbundance = 4;
+            crustalAbundance = 4.0;
         } else if (value.equals("very high")) {
-            crustalAbundance = 5;
+            crustalAbundance = 5.0;
         }
 
         return crustalAbundance;
+    }
+
+    public Double getEconomicValue(String value) {
+        Double economicValue = 0.0;
+        if (value.equals("trivial")) {
+            economicValue = 0.0;
+        } else if (value.equals("low")) {
+            economicValue = 1.0;
+        } else if (value.equals("moderate")) {
+            economicValue = 2.0;
+        } else if (value.equals("high")) {
+            economicValue = 3.0;
+        } else if (value.equals("very high")) {
+            economicValue = 4.0;
+        } else if (value.equals("I'm rich!")) {
+            economicValue = 5.0;
+        }
+
+        return economicValue;
     }
 }

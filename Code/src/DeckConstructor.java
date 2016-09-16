@@ -60,9 +60,10 @@ public class DeckConstructor {
 
                     double hardness = cardDataFetch.getHardnessValue(tempCardData.get(1));
                     double specificGravity = cardDataFetch.getSpecificGravityValue(tempCardData.get(2));
-                    Integer crustalAbundance = cardDataFetch.getCrustalAbundance(tempCardData.get(4));
+                    double crustalAbundance = cardDataFetch.getCrustalAbundance(tempCardData.get(4));
+                    double economicValue = cardDataFetch.getEconomicValue(tempCardData.get(5));
 
-                    deck.add(new MCard(tempCardData.get(0), hardness, specificGravity, tempCardData.get(3), crustalAbundance, tempCardData.get(5)));
+                    deck.add(new MCard(tempCardData.get(0), hardness, specificGravity, tempCardData.get(3), crustalAbundance, economicValue));
                     tempCardData.clear();
                 }
 

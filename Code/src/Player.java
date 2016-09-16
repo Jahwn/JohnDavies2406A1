@@ -27,8 +27,13 @@ public class Player {
                 System.out.println(n + " " + c.getName());
                 n++;
             }
-            System.out.print("Choose card by typing the number next to their name: ");
-            cardChoice = pCards.get(reader.nextInt());
+            System.out.print("Enter 'p' to pass or choose card by typing the number next to their name: ");
+            String input = reader.next();
+            if (input.equals("p")) {
+                cardChoice = null;
+            } else {
+                cardChoice = pCards.get(Integer.parseInt(input));
+            }
             return cardChoice;
         } else {
             return null;
