@@ -33,6 +33,7 @@ public class Player {
                 cardChoice = null;
             } else {
                 cardChoice = pCards.get(Integer.parseInt(input));
+                pCards.remove(Integer.parseInt(input));
             }
             return cardChoice;
         } else {

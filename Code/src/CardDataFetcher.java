@@ -61,4 +61,16 @@ public class CardDataFetcher {
 
         return economicValue;
     }
+
+    public boolean isTrumpCard(String cName) {
+        ArrayList<String> tCardName = new ArrayList<String>(
+                Arrays.asList("The Miner", "The Petrologist", "The Gemmologist", "The Mineralogist", "The Geophysicist", "The Geologist"));
+        Boolean isTrumpCard = false;
+        for (String s: tCardName) {
+            if (cName.equals(s)) {
+                isTrumpCard = true;
+            }
+        }
+        return isTrumpCard;
+    }
 }

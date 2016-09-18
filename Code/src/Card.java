@@ -59,7 +59,7 @@ class MCard extends Card {
         return economicValue;
     }
     String getCategory() {
-        return "Category: N/A";
+        return "N/A";
     }
 }
 class SCard extends Card {
@@ -86,7 +86,7 @@ class SCard extends Card {
         return null;
     }
     String getCategory() {
-        return "Category: " + category;
+        return category;
     }
 }
 
