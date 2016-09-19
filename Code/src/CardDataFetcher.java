@@ -7,19 +7,37 @@ import java.util.*;
 // This class converts data from string to numerical formats such double or integer values from the DeckConstructor class
 public class CardDataFetcher {
     public Double getHardnessValue(String value) {
-        Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(value);
         double hardness = 0;
+        List<Double> data = new ArrayList<Double>();
+        Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(value);
         while(m.find()) {
-            hardness = Double.parseDouble(m.group(1));
+            double d = Double.parseDouble(m.group(1));
+            data.add(d);
+        }
+        if (data.size() == 2) {
+            hardness = (data.get(0) + data.get(1)) / 2;
+        } else if (data.size() == 1) {
+            hardness = data.get(0);
+        } else {
+            hardness = 0;
         }
         return hardness;
     }
 
     public Double getSpecificGravityValue(String value) {
-        Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(value);
         double specificGravity = 0;
+        List<Double> data = new ArrayList<Double>();
+        Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(value);
         while(m.find()) {
-            specificGravity = Double.parseDouble(m.group(1));
+            double d = Double.parseDouble(m.group(1));
+            data.add(d);
+        }
+        if (data.size() == 2) {
+            specificGravity = (data.get(0) + data.get(1)) / 2;
+        } else if (data.size() == 1) {
+            specificGravity = data.get(0);
+        } else {
+            specificGravity = 0;
         }
         return specificGravity;
     }
@@ -60,6 +78,40 @@ public class CardDataFetcher {
         }
 
         return economicValue;
+    }
+
+    public Double getCleavage(String value) {
+        Double cleavage = 0.0;
+        if (value.equals("none")) {
+            cleavage = 0.0;
+        } else if (value.equals("poor/none")) {
+            cleavage = 1.0;
+        } else if (value.equals("1 poor")) {
+            cleavage = 2.0;
+        } else if (value.equals("2 poor")) {
+            cleavage = 3.0;
+        } else if (value.equals("1 good, 1 poor")) {
+            cleavage = 4.0;
+        } else if (value.equals("2 good")) {
+            cleavage = 5.0;
+        } else if (value.equals("3 good")) {
+            cleavage = 6.0;
+        } else if (value.equals("1 perfect")) {
+            cleavage = 7.0;
+        } else if (value.equals("1 perfect, 1 good")) {
+            cleavage = 8.0;
+        } else if (value.equals("1 perfect, 2 good")) {
+            cleavage = 9.0;
+        } else if (value.equals("2 perfect, 1 good")) {
+            cleavage = 10.0;
+        } else if (value.equals("3 perfect")) {
+            cleavage = 11.0;
+        } else if (value.equals("4 perfect")) {
+            cleavage = 12.0;
+        } else if (value.equals("6 perfect")) {
+            cleavage = 13.0;
+        }
+        return cleavage;
     }
 
     public boolean isTrumpCard(String cName) {

@@ -10,7 +10,7 @@ public abstract class Card {
 
     abstract Double getHardness();
     abstract Double getSpecificGravity();
-    abstract String getCleavage();
+    abstract Double getCleavage();
     abstract Double getCrustalAbundance();
     abstract Double getEconomicValue();
     abstract String getCategory();
@@ -23,11 +23,11 @@ public abstract class Card {
 class MCard extends Card {
     public Double hardness;
     public Double specificGravity;
-    public String cleavage;
+    public Double cleavage;
     public Double crustalAbundance;
     public Double economicValue;
 
-    MCard(String name, Double hardness, Double specificGravity, String cleavage, Double crustalAbundance, Double economicValue) {
+    MCard(String name, Double hardness, Double specificGravity, Double cleavage, Double crustalAbundance, Double economicValue) {
 
         super(name);
         this.hardness = hardness;
@@ -49,8 +49,8 @@ class MCard extends Card {
     Double getSpecificGravity() {
         return specificGravity;
     }
-    String getCleavage() {
-        return "Cleavage: " + cleavage;
+    Double getCleavage() {
+        return cleavage;
     }
     Double getCrustalAbundance() {
         return crustalAbundance;
@@ -76,8 +76,8 @@ class SCard extends Card {
     Double getSpecificGravity() {
         return null;
     }
-    String getCleavage() {
-        return "Cleavage: N/A";
+    Double getCleavage() {
+        return null;
     }
     Double getCrustalAbundance() {
         return null;
