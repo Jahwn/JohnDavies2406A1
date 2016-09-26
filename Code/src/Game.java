@@ -7,15 +7,15 @@ import java.util.*;
 
 public class Game {
 
+    public static ArrayList<Player> players = new ArrayList<Player>();
+    public static ArrayList<Card> deck = new ArrayList<Card>();
+
     public static void main(String[] args) {
 
         Scanner reader = new Scanner(System.in);
 
         DeckConstructor deckConstructor = new DeckConstructor();
         CardDataFetcher cardData = new CardDataFetcher();
-
-        ArrayList<Player> players = new ArrayList<Player>();
-        ArrayList<Card> deck = new ArrayList<Card>();
 
         // Table will contain cards currently in play
         Card table = new MCard("[No card, please disregard]", 0.0, 0.0, 0.0, 0.0, 0.0);;
@@ -56,10 +56,21 @@ public class Game {
         // This is where players take their turns
         while (running) {
             for (Player p : players) {
+                int playersPassed = playersPassed();
+                if (p.playerTurn) {
+                    if (playersPassed == playerCount - 1) {
+                        category = "No category";
+                        System.out.println("----------------------------------------" +
+                                "\nPlayer " + p.playerNo + " won round " + round +
+                                "\n----------------------------------------");
+                        round++;
+                    }
+                }
                 if (category.equals("No category")) {
                     System.out.println("----------------------------------------" +
                             "\nRound " + round +
                             "\n----------------------------------------");
+                    bringBackPlayers();
                 }
                 System.out.println("Player " + p.playerNo + "'s turn");
                 boolean turnValid = false;
@@ -123,23 +134,33 @@ public class Game {
                         } else {
                             // If a category already exists then players don't choose a category
                             if (category.equals("No category")) {
-                                System.out.print("Enter the category by inputting the number next to the category name: ");
-                                int input = reader.nextInt();
-                                if (input == 0) {
-                                    category = "Hardness";
-                                    categoryValue = playerChoice.getHardness();
-                                } else if (input == 1) {
-                                    category = "Specific Gravity";
-                                    categoryValue = playerChoice.getSpecificGravity();
-                                } else if (input == 2) {
-                                    category = "Cleavage";
-                                    categoryValue = playerChoice.getCleavage();
-                                } else if (input == 3) {
-                                    category = "Crustal Abundance";
-                                    categoryValue = playerChoice.getCrustalAbundance();
-                                } else if (input == 4) {
-                                    category = "Economic Value";
-                                    categoryValue = playerChoice.getEconomicValue();
+                                boolean inputValid = false;
+                                while (!inputValid) {
+                                    System.out.print("Enter the category by inputting the number next to the category name: ");
+                                    int input = reader.nextInt();
+                                    if (input == 0) {
+                                        category = "Hardness";
+                                        categoryValue = playerChoice.getHardness();
+                                        inputValid = true;
+                                    } else if (input == 1) {
+                                        category = "Specific Gravity";
+                                        categoryValue = playerChoice.getSpecificGravity();
+                                        inputValid = true;
+                                    } else if (input == 2) {
+                                        category = "Cleavage";
+                                        categoryValue = playerChoice.getCleavage();
+                                        inputValid = true;
+                                    } else if (input == 3) {
+                                        category = "Crustal Abundance";
+                                        categoryValue = playerChoice.getCrustalAbundance();
+                                        inputValid = true;
+                                    } else if (input == 4) {
+                                        category = "Economic Value";
+                                        categoryValue = playerChoice.getEconomicValue();
+                                        inputValid = true;
+                                    } else {
+                                        System.out.println("***Error: Please enter proper input***");
+                                    }
                                 }
                                 // Put the card on the table
                                 table = playerChoice;
@@ -215,5 +236,19 @@ public class Game {
             }
         }
         return playerChoice;
+    }
+    public static int playersPassed() {
+        int playersPassed = 0;
+        for (Player p: players) {
+            if (!p.playerTurn) {
+                playersPassed++;
+            }
+        }
+        return playersPassed;
+    }
+    public static void bringBackPlayers() {
+        for (Player p: players) {
+            p.playerTurn = true;
+        }
     }
 }
