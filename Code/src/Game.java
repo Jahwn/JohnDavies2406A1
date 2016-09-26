@@ -18,7 +18,7 @@ public class Game {
         ArrayList<Card> deck = new ArrayList<Card>();
 
         // Table will contain cards currently in play
-        Card table = null;
+        Card table = new MCard("[No card, please disregard]", 0.0, 0.0, 0.0, 0.0, 0.0);;
 
         deck = deckConstructor.ConstructDeck(deck);
 
@@ -51,28 +51,34 @@ public class Game {
 
         Boolean running = true;
 
+        int round = 1;
+
         // This is where players take their turns
         while (running) {
             for (Player p : players) {
+                if (category.equals("No category")) {
+                    System.out.println("----------------------------------------" +
+                            "\nRound " + round +
+                            "\n----------------------------------------");
+                }
                 System.out.println("Player " + p.playerNo + "'s turn");
-                Card playerChoice = p.playerTurn();
-                boolean cardChosen = false;
+                boolean turnValid = false;
 
-                // If the player has chosen to pass
-                if (playerChoice == null) {
-                    p.pCards.add(deck.get(0));
-                    System.out.println(deck.get(0).getName() + " added to your hand Player " + p.playerNo);
-                    deck.remove(0);
-                } else {
-                    while (!cardChosen) {
-                        playerChoice = checkPlayerChoice(playerChoice, p);
-                        System.out.println(playerChoice.getName() + "'s data:");
-                        System.out.println("0 Hardness: " + playerChoice.getHardness() +
-                                "\n1 Specific Gravity: " + playerChoice.getSpecificGravity() +
-                                "\n2 Cleavage: " + playerChoice.getCleavage() +
-                                "\n3 Crustal Abundance: " + playerChoice.getCrustalAbundance() +
-                                "\n4 Economic Value: " + playerChoice.getEconomicValue() +
-                                "\n4 Category (if trump card): " + playerChoice.getCategory());
+                if(!p.playerTurn) {
+                    System.out.println("Player " + p.playerNo + " chose to pass");
+                    turnValid = true;
+                }
+
+                while (!turnValid) {
+                    Card playerChoice = checkPlayerChoice(p);
+                    // If the player has chosen to pass
+                    if (playerChoice == null) {
+                        p.pCards.add(deck.get(0));
+                        System.out.println(deck.get(0).getName() + " added to your hand Player " + p.playerNo);
+                        deck.remove(0);
+                        p.playerTurn = false;
+                        turnValid = true;
+                    } else {
                         Boolean isTrumpCard = cardData.isTrumpCard(playerChoice.name);
                         // If a trump card is detected, the category is automatically changed
                         // Unless that card is The Geologist
@@ -85,6 +91,7 @@ public class Game {
                                         "\n2 Cleavage" +
                                         "\n3 Crustal Abundance" +
                                         "\n4 Economic Value");
+                                System.out.print("Enter the category by inputting the number next to the category name: ");
                                 int input = reader.nextInt();
                                 if (input == 0) {
                                     category = "Hardness";
@@ -106,10 +113,13 @@ public class Game {
                                 categoryValue = 0.0;
                                 System.out.println("Category value has been reset");
                             }
+                            // When category changes, put the card from the table back to the deck
+                            deck.add(table);
+                            table = new MCard("[No card, please disregard]", 0.0, 0.0, 0.0, 0.0, 0.0);
                             System.out.println("----------------------------------------" +
                                     "\nNew category is " + category +
                                     "\n----------------------------------------");
-                            cardChosen = true;
+                            turnValid = true;
                         } else {
                             // If a category already exists then players don't choose a category
                             if (category.equals("No category")) {
@@ -133,9 +143,10 @@ public class Game {
                                 }
                                 // Put the card on the table
                                 table = playerChoice;
-                                System.out.println("Category: " + category + " | value: " + categoryValue);
-                                System.out.println();
-                                cardChosen = true;
+                                System.out.println("----------------------------------------" +
+                                        "\nCategory: " + category + " | value to beat: " + categoryValue +
+                                        "\n----------------------------------------");
+                                turnValid = true;
                             } else {
                                 Double playerCategoryValue = 0.0;
 
@@ -152,15 +163,19 @@ public class Game {
                                 }
 
                                 if (categoryValue > playerCategoryValue) {
-                                    System.out.println("Your cards value in " + category + " is lower than " + table.name +
-                                    "\nPlease select another card");
+                                    System.out.println("----------------------------------------" +
+                                            "\nYour card's value in " + category + " is lower than " + table.name +
+                                            "\nPlease select another card" +
+                                            "\n----------------------------------------");
+                                    p.pCards.add(playerChoice);
                                 } else {
-                                    System.out.println("Your card beat " + table.name + "!");
+                                    System.out.println("----------------------------------------" +
+                                            "\nYour card beat " + table.name + "!");
                                     table = playerChoice;
                                     categoryValue = playerCategoryValue;
-                                    System.out.println("New value to beat for " + category + " is: " + categoryValue);
-                                    System.out.println();
-                                    cardChosen = true;
+                                    System.out.println("New value to beat for " + category + " is: " + categoryValue +
+                                            "\n----------------------------------------");
+                                    turnValid = true;
                                 }
                             }
                         }
@@ -169,29 +184,34 @@ public class Game {
             }
         }
     }
-    public static Card checkPlayerChoice(Card playerChoice, Player p) {
+    public static Card checkPlayerChoice(Player p) {
         Scanner reader = new Scanner(System.in);
+        Card playerChoice = p.playerTurn();
         boolean choiceValid = false;
-        // This while loop enables players to go back on their choice of cards
-        // If they don't like their card's stats, they can go back and choose again
+            // This while loop enables players to go back on their choice of cards
+            // If they don't like their card's stats, they can go back and choose again
         while (!choiceValid) {
-            System.out.println(playerChoice.getName() + "'s data:");
-            System.out.println("0 Hardness: " + playerChoice.getHardness() +
-                    "\n1 Specific Gravity: " + playerChoice.getSpecificGravity() +
-                    "\n2 Cleavage: " + playerChoice.getCleavage() +
-                    "\n3 Crustal Abundance: " + playerChoice.getCrustalAbundance() +
-                    "\n4 Economic Value: " + playerChoice.getEconomicValue() +
-                    "\n5 Category (if trump card): " + playerChoice.getCategory());
-            System.out.print("Do you want to proceed with this card? Press 'y', or 'n' to proceed: ");
-            String choice = reader.next();
-            if (choice.equals("y")) {
-                choiceValid = true;
-            } else if (choice.equals("n")) {
-                System.out.println("Select another card or pass.");
-                p.pCards.add(playerChoice);
-                playerChoice = p.playerTurn();
+            if (playerChoice != null) {
+                System.out.println(playerChoice.getName() + "'s data:");
+                System.out.println("0 Hardness: " + playerChoice.getHardness() +
+                        "\n1 Specific Gravity: " + playerChoice.getSpecificGravity() +
+                        "\n2 Cleavage: " + playerChoice.getCleavage() +
+                        "\n3 Crustal Abundance: " + playerChoice.getCrustalAbundance() +
+                        "\n4 Economic Value: " + playerChoice.getEconomicValue() +
+                        "\n5 Category (if trump card): " + playerChoice.getCategory());
+                System.out.print("Do you want to proceed with this card? Press 'y', or 'n' to proceed: ");
+                String choice = reader.next();
+                if (choice.equals("y")) {
+                    choiceValid = true;
+                } else if (choice.equals("n")) {
+                    System.out.println("Select another card or pass.");
+                    p.pCards.add(playerChoice);
+                    playerChoice = p.playerTurn();
+                } else {
+                    System.out.println("***Error: Please enter proper input***");
+                }
             } else {
-                System.out.println("Please enter proper input");
+                return playerChoice;
             }
         }
         return playerChoice;

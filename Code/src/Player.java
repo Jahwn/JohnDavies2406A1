@@ -6,6 +6,7 @@ import java.util.*;
 public class Player {
     public int playerNo;
     public ArrayList<Card> pCards;
+    boolean playerTurn = true;
 
     Player(int playerNo, ArrayList<Card> pCards) {
         this.playerNo = playerNo;
@@ -20,7 +21,7 @@ public class Player {
 
     public Card playerTurn() {
         if (pCards.size() != 0) {
-            Card cardChoice;
+            Card cardChoice = null;
             int n = 0;
             System.out.println("Your card(s):");
             for (Card c: pCards) {
@@ -29,11 +30,22 @@ public class Player {
             }
             System.out.print("Enter 'p' to pass or choose card by typing the number next to their name: ");
             String input = reader.next();
-            if (input.equals("p")) {
-                cardChoice = null;
-            } else {
-                cardChoice = pCards.get(Integer.parseInt(input));
-                pCards.remove(Integer.parseInt(input));
+            boolean inputValid = false;
+            while (!inputValid) {
+                try {
+                    if (input.equals("p")) {
+                        cardChoice = null;
+                        playerTurn = false;
+                        inputValid = true;
+                    } else {
+                        cardChoice = pCards.get(Integer.parseInt(input));
+                        pCards.remove(Integer.parseInt(input));
+                        inputValid = true;
+                    }
+                } catch (Exception e) {
+                    System.out.println("***Error: Please enter proper input***");
+                    input = reader.next();
+                }
             }
             return cardChoice;
         } else {
