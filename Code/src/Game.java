@@ -1,6 +1,12 @@
 /**
  * Created by John on 9/2/2016.
  */
+/*
+ * ****************************
+ * INTERNET CONNECTION REQUIRED
+ * ****************************
+ */
+
 import javax.swing.*;
 import java.lang.*;
 import java.util.*;
@@ -17,7 +23,7 @@ public class Game {
         DeckConstructor deckConstructor = new DeckConstructor();
         CardDataFetcher cardData = new CardDataFetcher();
 
-        // Table will contain cards currently in play
+        // Table will contain the card currently in play
         Card table = new MCard("[No card, please disregard]", 0.0, 0.0, 0.0, 0.0, 0.0);;
 
         deck = deckConstructor.ConstructDeck(deck);
@@ -43,7 +49,7 @@ public class Game {
         }
         // Assigning cards to players
         for (Player s: players) {
-            while(s.pCards.size() <= 1) {
+            while(s.pCards.size() < 1) {
                 s.pCards.add(deck.get(0));
                 deck.remove(0);
             }
@@ -55,66 +61,88 @@ public class Game {
 
         ArrayList<Integer> winners = new ArrayList<Integer>();
 
+        String noCategory = "No category";
+
+        boolean roundStarted = false;
+
         // This is where players take their turns
         while (running) {
             for (Player p : players) {
                 boolean turnValid = false;
-                if (p.pCards.size() == 0) {
-                    p.playerTurn = false;
-                    System.out.println("Player " + p.playerNo + " has no cards remaining");
+                // If the player has already emptied their deck and won, disregard their turn by making the program think they've passed and have had their turn
+                if (!p.isPlaying) {
+                    p.playerPassed = true;
                     turnValid = true;
                 }
+
+                // Check the number of players who have passed
                 int playersPassed = playersPassed();
-                if (p.playerTurn) {
-                    if (playersPassed == (playerCount - 1) && p.isPlaying) {
-                        category = "No category";
+
+                // If player hasn't passed...
+                if (!p.playerPassed) {
+                    // If all but 1 player has passed, reset the category and announce the winner of the round
+                    if (playersPassed == playerCount - 1) {
+                        category = noCategory;
                         System.out.println("----------------------------------------" +
                                 "\nPlayer " + p.playerNo + " won round " + round +
                                 "\n----------------------------------------");
+                        // Move to the next round
                         round++;
+                        roundStarted = false;
                     }
                 }
-                if (category.equals("No category") && p.isPlaying) {
+
+                // If this is a new round, and the player is still in the game, announce the new round
+                if (!roundStarted && p.isPlaying) {
                     System.out.println("----------------------------------------" +
                             "\nRound " + round +
                             "\n----------------------------------------");
+                    // Because this is a new round, all players who have passed are now back in
                     bringBackPlayers();
                 }
-                if (!p.playerTurn) {
+
+                // If this player has passed, skip this turn
+                if (p.playerPassed) {
                     System.out.println("Player " + p.playerNo + " is out of the round");
                     turnValid = true;
                 } else {
+                    // Because the program thinks winning players have passed, a check to see if they're still playing is needed
                     if (p.isPlaying) {
                         System.out.println("Player " + p.playerNo + "'s turn");
-                    } else {
-                        turnValid = true;
                     }
                 }
 
                 while (!turnValid) {
                     boolean tableIsEmpty = false;
-                    if (category.equals("No category")) {
+                    if (category.equals(noCategory)) {
                         tableIsEmpty = true;
                     }
+
+                    // Bring up interface for card selection
                     Card playerChoice = checkPlayerChoice(p);
-                    while (tableIsEmpty) {
+
+                    /*while (tableIsEmpty) {
                         if (playerChoice == null) {
                             System.out.println("Please draw a card");
                             playerChoice = checkPlayerChoice(p);
+                            p.playerPassed = false;
                         } else {
                             tableIsEmpty = false;
                         }
-                    }
+                    }*/
+
                     // If the player has chosen to pass
                     if (playerChoice == null) {
-                        if (!p.pCards.isEmpty()) {
+                        if (p.isPlaying) {
                             p.pCards.add(deck.get(0));
                             System.out.println(deck.get(0).getName() + " added to your hand Player " + p.playerNo);
                             deck.remove(0);
-                            p.playerTurn = false;
+                            p.playerPassed = true;
                             turnValid = true;
+                            roundStarted = true;
                         }
                     } else {
+                        roundStarted = true;
                         Boolean isTrumpCard = cardData.isTrumpCard(playerChoice.name);
                         // If a trump card is detected, the category is automatically changed
                         // Unless that card is The Geologist
@@ -161,8 +189,8 @@ public class Game {
                                     "\n----------------------------------------");
                             turnValid = true;
                         } else {
-                            // If a category already exists then players don't choose a category
-                            if (category.equals("No category")) {
+                            // If a category doesn't already exist, then the player must choose one
+                            if (category.equals(noCategory)) {
                                 boolean inputValid = false;
                                 while (!inputValid) {
                                     System.out.print("Enter the category by inputting the number next to the category name: ");
@@ -231,6 +259,7 @@ public class Game {
                         }
                     }
                 }
+                // If the player emptied their deck after a drawing a card, put them down as a winner
                 if (p.pCards.isEmpty()) {
                     p.isPlaying = false;
                     System.out.println("Player " + p.playerNo + " has no cards remaining");
@@ -244,8 +273,10 @@ public class Game {
                         }
                     }
                 }
+                // If there is only 1 player left, end the game and announce the winners
                 if (playerCount == 1) {
                     running = false;
+                    break;
                 }
             }
         }
@@ -291,7 +322,7 @@ public class Game {
     public static int playersPassed() {
         int playersPassed = 0;
         for (Player p: players) {
-            if (!p.playerTurn && p.isPlaying) {
+            if (p.playerPassed && p.isPlaying) {
                 playersPassed++;
             }
         }
@@ -299,7 +330,7 @@ public class Game {
     }
     public static void bringBackPlayers() {
         for (Player p: players) {
-            p.playerTurn = true;
+            p.playerPassed = false;
         }
     }
 }

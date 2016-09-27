@@ -1,6 +1,11 @@
 /**
  * Created by John on 8/29/2016.
  */
+/*
+ * ****************************
+ * INTERNET CONNECTION REQUIRED
+ * ****************************
+ */
 import javax.xml.parsers.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
