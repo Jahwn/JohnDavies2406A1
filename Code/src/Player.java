@@ -7,6 +7,7 @@ public class Player {
     public int playerNo;
     public ArrayList<Card> pCards;
     boolean playerTurn = true;
+    boolean isPlaying = true;
 
     Player(int playerNo, ArrayList<Card> pCards) {
         this.playerNo = playerNo;

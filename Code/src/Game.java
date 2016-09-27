@@ -43,7 +43,7 @@ public class Game {
         }
         // Assigning cards to players
         for (Player s: players) {
-            while(s.pCards.size() <= 7) {
+            while(s.pCards.size() <= 1) {
                 s.pCards.add(deck.get(0));
                 deck.remove(0);
             }
@@ -53,12 +53,20 @@ public class Game {
 
         int round = 1;
 
+        ArrayList<Integer> winners = new ArrayList<Integer>();
+
         // This is where players take their turns
         while (running) {
             for (Player p : players) {
+                boolean turnValid = false;
+                if (p.pCards.size() == 0) {
+                    p.playerTurn = false;
+                    System.out.println("Player " + p.playerNo + " has no cards remaining");
+                    turnValid = true;
+                }
                 int playersPassed = playersPassed();
                 if (p.playerTurn) {
-                    if (playersPassed == playerCount - 1) {
+                    if (playersPassed == (playerCount - 1) && p.isPlaying) {
                         category = "No category";
                         System.out.println("----------------------------------------" +
                                 "\nPlayer " + p.playerNo + " won round " + round +
@@ -66,29 +74,46 @@ public class Game {
                         round++;
                     }
                 }
-                if (category.equals("No category")) {
+                if (category.equals("No category") && p.isPlaying) {
                     System.out.println("----------------------------------------" +
                             "\nRound " + round +
                             "\n----------------------------------------");
                     bringBackPlayers();
                 }
-                System.out.println("Player " + p.playerNo + "'s turn");
-                boolean turnValid = false;
-
-                if(!p.playerTurn) {
-                    System.out.println("Player " + p.playerNo + " chose to pass");
+                if (!p.playerTurn) {
+                    System.out.println("Player " + p.playerNo + " is out of the round");
                     turnValid = true;
+                } else {
+                    if (p.isPlaying) {
+                        System.out.println("Player " + p.playerNo + "'s turn");
+                    } else {
+                        turnValid = true;
+                    }
                 }
 
                 while (!turnValid) {
+                    boolean tableIsEmpty = false;
+                    if (category.equals("No category")) {
+                        tableIsEmpty = true;
+                    }
                     Card playerChoice = checkPlayerChoice(p);
+                    while (tableIsEmpty) {
+                        if (playerChoice == null) {
+                            System.out.println("Please draw a card");
+                            playerChoice = checkPlayerChoice(p);
+                        } else {
+                            tableIsEmpty = false;
+                        }
+                    }
                     // If the player has chosen to pass
                     if (playerChoice == null) {
-                        p.pCards.add(deck.get(0));
-                        System.out.println(deck.get(0).getName() + " added to your hand Player " + p.playerNo);
-                        deck.remove(0);
-                        p.playerTurn = false;
-                        turnValid = true;
+                        if (!p.pCards.isEmpty()) {
+                            p.pCards.add(deck.get(0));
+                            System.out.println(deck.get(0).getName() + " added to your hand Player " + p.playerNo);
+                            deck.remove(0);
+                            p.playerTurn = false;
+                            turnValid = true;
+                        }
                     } else {
                         Boolean isTrumpCard = cardData.isTrumpCard(playerChoice.name);
                         // If a trump card is detected, the category is automatically changed
@@ -98,31 +123,35 @@ public class Game {
                             if (playerChoice.name.equals("The Geologist")) {
                                 System.out.println("Select a category: " +
                                         "\n0 Hardness" +
-                                        "\n1 Specific Gravity" +
+                                        "\n1 Specific gravity" +
                                         "\n2 Cleavage" +
-                                        "\n3 Crustal Abundance" +
-                                        "\n4 Economic Value");
+                                        "\n3 Crustal abundance" +
+                                        "\n4 Economic value");
                                 System.out.print("Enter the category by inputting the number next to the category name: ");
                                 int input = reader.nextInt();
                                 if (input == 0) {
                                     category = "Hardness";
                                 } else if (input == 1) {
-                                    category = "Specific Gravity";
+                                    category = "Specific gravity";
                                 } else if (input == 2) {
                                     category = "Cleavage";
                                 } else if (input == 3) {
-                                    category = "Crustal Abundance";
+                                    category = "Crustal abundance";
                                 } else if (input == 4) {
-                                    category = "Economic Value";
+                                    category = "Economic value";
                                 }
                                 categoryValue = 0.0;
-                                System.out.println("Category value has been reset");
+                                bringBackPlayers();
+                                System.out.println("Category value has been reset" +
+                                        "\nAll players who have passed are back in");
                             } else {
                                 System.out.println(playerChoice.getName() + "'s description: " +
                                         "\n" + playerChoice.getCategory());
                                 category = playerChoice.getCategory();
                                 categoryValue = 0.0;
-                                System.out.println("Category value has been reset");
+                                bringBackPlayers();
+                                System.out.println("Category value has been reset" +
+                                        "\nAll players who have passed are back in");
                             }
                             // When category changes, put the card from the table back to the deck
                             deck.add(table);
@@ -143,7 +172,7 @@ public class Game {
                                         categoryValue = playerChoice.getHardness();
                                         inputValid = true;
                                     } else if (input == 1) {
-                                        category = "Specific Gravity";
+                                        category = "Specific gravity";
                                         categoryValue = playerChoice.getSpecificGravity();
                                         inputValid = true;
                                     } else if (input == 2) {
@@ -151,11 +180,11 @@ public class Game {
                                         categoryValue = playerChoice.getCleavage();
                                         inputValid = true;
                                     } else if (input == 3) {
-                                        category = "Crustal Abundance";
+                                        category = "Crustal abundance";
                                         categoryValue = playerChoice.getCrustalAbundance();
                                         inputValid = true;
                                     } else if (input == 4) {
-                                        category = "Economic Value";
+                                        category = "Economic value";
                                         categoryValue = playerChoice.getEconomicValue();
                                         inputValid = true;
                                     } else {
@@ -173,13 +202,13 @@ public class Game {
 
                                 if (category.equals("Hardness")) {
                                     playerCategoryValue = playerChoice.getHardness();
-                                } else if (category.equals("Specific Gravity")) {
+                                } else if (category.equals("Specific gravity")) {
                                     playerCategoryValue = playerChoice.getSpecificGravity();
                                 } else if (category.equals("Cleavage")) {
                                     playerCategoryValue = playerChoice.getCleavage();
-                                } else if (category.equals("Crustal Abundance")) {
+                                } else if (category.equals("Crustal abundance")) {
                                     playerCategoryValue = playerChoice.getCrustalAbundance();
-                                } else if (category.equals("Economic Value")) {
+                                } else if (category.equals("Economic value")) {
                                     playerCategoryValue = playerChoice.getEconomicValue();
                                 }
 
@@ -202,8 +231,30 @@ public class Game {
                         }
                     }
                 }
+                if (p.pCards.isEmpty()) {
+                    p.isPlaying = false;
+                    System.out.println("Player " + p.playerNo + " has no cards remaining");
+                    if (winners.isEmpty()) {
+                        winners.add(p.playerNo);
+                        playerCount--;
+                    } else {
+                        if (!winners.contains(p.playerNo)) {
+                            winners.add(p.playerNo);
+                            playerCount--;
+                        }
+                    }
+                }
+                if (playerCount == 1) {
+                    running = false;
+                }
             }
         }
+        System.out.println("GAME OVER!! Winners: " +
+                "\n------------------****------------------");
+        for (int n: winners) {
+            System.out.println("Player " + n);
+        }
+        System.out.println("------------------****------------------");
     }
     public static Card checkPlayerChoice(Player p) {
         Scanner reader = new Scanner(System.in);
@@ -215,10 +266,10 @@ public class Game {
             if (playerChoice != null) {
                 System.out.println(playerChoice.getName() + "'s data:");
                 System.out.println("0 Hardness: " + playerChoice.getHardness() +
-                        "\n1 Specific Gravity: " + playerChoice.getSpecificGravity() +
+                        "\n1 Specific gravity: " + playerChoice.getSpecificGravity() +
                         "\n2 Cleavage: " + playerChoice.getCleavage() +
-                        "\n3 Crustal Abundance: " + playerChoice.getCrustalAbundance() +
-                        "\n4 Economic Value: " + playerChoice.getEconomicValue() +
+                        "\n3 Crustal abundance: " + playerChoice.getCrustalAbundance() +
+                        "\n4 Economic value: " + playerChoice.getEconomicValue() +
                         "\n5 Category (if trump card): " + playerChoice.getCategory());
                 System.out.print("Do you want to proceed with this card? Press 'y', or 'n' to proceed: ");
                 String choice = reader.next();
@@ -240,7 +291,7 @@ public class Game {
     public static int playersPassed() {
         int playersPassed = 0;
         for (Player p: players) {
-            if (!p.playerTurn) {
+            if (!p.playerTurn && p.isPlaying) {
                 playersPassed++;
             }
         }
