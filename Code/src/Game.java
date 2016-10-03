@@ -12,6 +12,11 @@ import java.lang.*;
 import java.util.*;
 
 public class Game {
+    /*
+     * ****************************
+     * INTERNET CONNECTION REQUIRED
+     * ****************************
+     */
 
     public static ArrayList<Player> players = new ArrayList<Player>();
     public static ArrayList<Card> deck = new ArrayList<Card>();
@@ -50,7 +55,7 @@ public class Game {
 
         // Assigning cards to players
         for (Player s: players) {
-            while(s.pCards.size() < 8) {
+            while(s.pCards.size() < 1) {
                 s.pCards.add(deck.get(0));
                 deck.remove(0);
             }
@@ -68,6 +73,9 @@ public class Game {
 
         // This is where players take their turns
         while (running) {
+            // A label is used to add a breaking point for the program when a winning condition is satisfied
+            // This is using a normal break on the for loop right below would only make the current loop the last
+            // The for loop would still continue until the last player has been iterated through
             outer:
             for (Player p : players) {
                 boolean turnValid = false;
@@ -289,10 +297,8 @@ public class Game {
                                     p.pCards.add(playerChoice);
                                 } else {
                                     System.out.println("----------------------------------------");
-                                    if (!table.name.equals("No card")) {
-                                        System.out.println("Your card beat " + table.name + "!");
-                                    }
                                     if (!table.getName().equals("No card")) {
+                                        System.out.println("Your card beat " + table.name + "!");
                                         deck.add(table);
                                     }
                                     table = playerChoice;

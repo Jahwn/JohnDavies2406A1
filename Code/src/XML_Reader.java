@@ -16,6 +16,11 @@ import java.util.*;
 //Note: 11 strings in XML elements
 public class XML_Reader {
     public ArrayList Reader() {
+        /*
+         * ****************************
+         * INTERNET CONNECTION REQUIRED
+         * ****************************
+         */
 
         final ArrayList<String> CARD_DATA = new ArrayList<String>();
 
