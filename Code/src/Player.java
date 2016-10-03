@@ -29,33 +29,40 @@ public class Player {
             boolean containsTheGeophysicist = false;
             boolean containsMagnetite = false;
             for (Card c: pCards) {
-                System.out.println(n + " " + c.getName());
-                n++;
                 if (c.getName().equals("The Geophysicist")) {
                     containsTheGeophysicist = true;
                 }
                 if (c.getName().equals("Magnetite")) {
                     containsMagnetite = true;
                 }
+                System.out.println(n + " " + c.getName());
+                n++;
             }
+            boolean inputValidSpecial = false;
+            boolean inputValid = false;
             if (containsMagnetite && containsTheGeophysicist) {
                 System.out.println("***Your deck contains Magnetite and The Geophysicist***" +
                 "\nWould you like to draw both of these cards? Press 'y' or 'n'");
-                boolean inputValid = false;
-                while (!inputValid) {
+                while (!inputValidSpecial) {
                     String input = reader.next();
                     if (input.equals("y")) {
-                        System.out.println("SOME MAGICAL SHOULD HAPPEN HERE");
+                        cardChoice = new MCard("[The Geophysicist & Magnetite]", 0.0, 0.0, 0.0, 0.0, 0.0);
+                        inputValidSpecial = true;
                         inputValid = true;
                     } else if (input.equals("n")) {
                         System.out.println("Continuing game as normal...");
+                        inputValidSpecial = true;
+                    } else {
+                        System.out.println("\n" +
+                                "***Error: Please enter proper input***" +
+                                "\n");
                     }
                 }
             }
-            System.out.print("Enter 'p' to pass or choose card by typing the number next to their name: ");
-            String input = reader.next();
-            boolean inputValid = false;
+
             while (!inputValid) {
+                System.out.print("Enter 'p' to pass or choose card by typing the number next to their name: ");
+                String input = reader.next();
                 try {
                     if (input.equals("p")) {
                         cardChoice = null;
@@ -67,8 +74,9 @@ public class Player {
                         inputValid = true;
                     }
                 } catch (Exception e) {
-                    System.out.println("***Error: Please enter proper input***");
-                    input = reader.next();
+                    System.out.println("\n" +
+                            "***Error: Please enter proper input***" +
+                            "\n");
                 }
             }
             return cardChoice;

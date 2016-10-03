@@ -16,7 +16,7 @@ public abstract class Card {
     abstract String getCategory();
 
     public String getName() {
-        return "Card name: " + name;
+        return name;
     }
 }
 
@@ -37,10 +37,6 @@ class MCard extends Card {
         this.economicValue = economicValue;
 
     }
-
-    //public String getHardness() {
-       //return hardness;
-    //}
 
     @Override
     Double getHardness() {

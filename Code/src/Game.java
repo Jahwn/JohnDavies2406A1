@@ -15,16 +15,16 @@ public class Game {
 
     public static ArrayList<Player> players = new ArrayList<Player>();
     public static ArrayList<Card> deck = new ArrayList<Card>();
+    public static CardDataFetcher cardData = new CardDataFetcher();
 
     public static void main(String[] args) {
 
         Scanner reader = new Scanner(System.in);
 
         DeckConstructor deckConstructor = new DeckConstructor();
-        CardDataFetcher cardData = new CardDataFetcher();
 
         // Table will contain the card currently in play
-        Card table = new MCard("[No card, please disregard]", 0.0, 0.0, 0.0, 0.0, 0.0);;
+        Card table = new MCard("No card", 0.0, 0.0, 0.0, 0.0, 0.0);
 
         deck = deckConstructor.ConstructDeck(deck);
 
@@ -47,9 +47,23 @@ public class Game {
         for (int n = 1; n <= playerCount; n++) {
             players.add(new Player(n, new ArrayList<Card>()));
         }
+
+        for (Player p: players) {
+            if (p.playerNo == 2) {
+                for (Card c: deck) {
+                    if (c.getName().equals("The Geophysicist")) {
+                        p.pCards.add(c);
+                    }
+                    if (c.getName().equals(("Magnetite"))) {
+                        p.pCards.add(c);
+                    }
+                }
+            }
+        }
+
         // Assigning cards to players
         for (Player s: players) {
-            while(s.pCards.size() < 1) {
+            while(s.pCards.size() < 8) {
                 s.pCards.add(deck.get(0));
                 deck.remove(0);
             }
@@ -67,6 +81,7 @@ public class Game {
 
         // This is where players take their turns
         while (running) {
+            outer:
             for (Player p : players) {
                 boolean turnValid = false;
                 // If the player has already emptied their deck and won, disregard their turn by making the program think they've passed and have had their turn
@@ -113,34 +128,32 @@ public class Game {
                 }
 
                 while (!turnValid) {
-                    boolean tableIsEmpty = false;
-                    if (category.equals(noCategory)) {
-                        tableIsEmpty = true;
-                    }
-
                     // Bring up interface for card selection
                     Card playerChoice = checkPlayerChoice(p);
-
-                    /*while (tableIsEmpty) {
-                        if (playerChoice == null) {
-                            System.out.println("Please draw a card");
-                            playerChoice = checkPlayerChoice(p);
-                            p.playerPassed = false;
-                        } else {
-                            tableIsEmpty = false;
-                        }
-                    }*/
 
                     // If the player has chosen to pass
                     if (playerChoice == null) {
                         if (p.isPlaying) {
-                            p.pCards.add(deck.get(0));
-                            System.out.println(deck.get(0).getName() + " added to your hand Player " + p.playerNo);
-                            deck.remove(0);
+                            // If the deck isn't empty, give the player a card
+                            if (!deck.isEmpty()) {
+                                p.pCards.add(deck.get(0));
+                                System.out.println(deck.get(0).getName() + " added to your hand Player " + p.playerNo);
+                                deck.remove(0);
+                            } else {
+                                System.out.println("\n" +
+                                        "***Error: Deck is empty***" +
+                                        "\n");
+                            }
                             p.playerPassed = true;
                             turnValid = true;
                             roundStarted = true;
                         }
+                    } else if (playerChoice.getName().equals("[The Geophysicist & Magnetite]")) {
+                        // If the player drew The Geophysicist and the Magnetite combination, they win the game
+                        winners.clear();
+                        winners.add(p.playerNo);
+                        running = false;
+                        break outer;
                     } else {
                         roundStarted = true;
                         Boolean isTrumpCard = cardData.isTrumpCard(playerChoice.name);
@@ -156,25 +169,35 @@ public class Game {
                                         "\n3 Crustal abundance" +
                                         "\n4 Economic value");
                                 System.out.print("Enter the category by inputting the number next to the category name: ");
-                                int input = reader.nextInt();
-                                if (input == 0) {
-                                    category = "Hardness";
-                                } else if (input == 1) {
-                                    category = "Specific gravity";
-                                } else if (input == 2) {
-                                    category = "Cleavage";
-                                } else if (input == 3) {
-                                    category = "Crustal abundance";
-                                } else if (input == 4) {
-                                    category = "Economic value";
+                                String input = reader.next();
+                                boolean inputValid = false;
+                                while (!inputValid) {
+                                    if (input.equals("0")) {
+                                        category = "Hardness";
+                                        inputValid = true;
+                                    } else if (input.equals("1")) {
+                                        category = "Specific gravity";
+                                        inputValid = true;
+                                    } else if (input.equals("2")) {
+                                        category = "Cleavage";
+                                        inputValid = true;
+                                    } else if (input.equals("3")) {
+                                        category = "Crustal abundance";
+                                        inputValid = true;
+                                    } else if (input.equals("4")) {
+                                        category = "Economic value";
+                                        inputValid = true;
+                                    } else {
+                                        System.out.println("\n" +
+                                                "***Error: Please enter proper input***" +
+                                                "\n");
+                                    }
                                 }
                                 categoryValue = 0.0;
                                 bringBackPlayers();
                                 System.out.println("Category value has been reset" +
                                         "\nAll players who have passed are back in");
                             } else {
-                                System.out.println(playerChoice.getName() + "'s description: " +
-                                        "\n" + playerChoice.getCategory());
                                 category = playerChoice.getCategory();
                                 categoryValue = 0.0;
                                 bringBackPlayers();
@@ -182,8 +205,15 @@ public class Game {
                                         "\nAll players who have passed are back in");
                             }
                             // When category changes, put the card from the table back to the deck
-                            deck.add(table);
-                            table = new MCard("[No card, please disregard]", 0.0, 0.0, 0.0, 0.0, 0.0);
+                            if (!table.getName().equals("No card")) {
+                                deck.add(table);
+                            }
+                            // Reset the table
+                            table = new MCard("No card", 0.0, 0.0, 0.0, 0.0, 0.0);
+
+                            // Put the trump card back in the deck after use
+                            deck.add(playerChoice);
+
                             System.out.println("----------------------------------------" +
                                     "\nNew category is " + category +
                                     "\n----------------------------------------");
@@ -192,54 +222,78 @@ public class Game {
                             // If a category doesn't already exist, then the player must choose one
                             if (category.equals(noCategory)) {
                                 boolean inputValid = false;
+                                // valueToBeat is the value players will be shown. Actual value players need to beat is a double
+                                // Instead of decimal values, users will see values such as "trace" and "moderate", among others
+                                String valueToBeat = "";
+
                                 while (!inputValid) {
                                     System.out.print("Enter the category by inputting the number next to the category name: ");
-                                    int input = reader.nextInt();
-                                    if (input == 0) {
+                                    String input = reader.next();
+                                    // String values were favored for comparisons to minimize the complexity of the input check
+                                    // Anything else may have required a try/catch loop
+                                    if (input.equals("0")) {
                                         category = "Hardness";
                                         categoryValue = playerChoice.getHardness();
+                                        valueToBeat = Double.toString(categoryValue);
                                         inputValid = true;
-                                    } else if (input == 1) {
+                                    } else if (input.equals("1")) {
                                         category = "Specific gravity";
                                         categoryValue = playerChoice.getSpecificGravity();
+                                        valueToBeat = Double.toString(categoryValue);
                                         inputValid = true;
-                                    } else if (input == 2) {
+                                    } else if (input.equals("2")) {
                                         category = "Cleavage";
                                         categoryValue = playerChoice.getCleavage();
+                                        valueToBeat = cardData.getCleavageString(categoryValue);
                                         inputValid = true;
-                                    } else if (input == 3) {
+                                    } else if (input.equals("3")) {
                                         category = "Crustal abundance";
                                         categoryValue = playerChoice.getCrustalAbundance();
+                                        valueToBeat = cardData.getCrustalAbundanceString(categoryValue);
                                         inputValid = true;
-                                    } else if (input == 4) {
+                                    } else if (input.equals("4")) {
                                         category = "Economic value";
                                         categoryValue = playerChoice.getEconomicValue();
+                                        valueToBeat = cardData.getEconomicValueString(categoryValue);
                                         inputValid = true;
                                     } else {
-                                        System.out.println("***Error: Please enter proper input***");
+                                        System.out.println("\n" +
+                                                "***Error: Please enter proper input***" +
+                                                "\n");
                                     }
                                 }
                                 // Put the card on the table
                                 table = playerChoice;
+
                                 System.out.println("----------------------------------------" +
-                                        "\nCategory: " + category + " | value to beat: " + categoryValue +
+                                        "\nCategory: " + category + " | value to beat: " + valueToBeat +
                                         "\n----------------------------------------");
+
                                 turnValid = true;
                             } else {
                                 Double playerCategoryValue = 0.0;
+                                String valueToBeat = "";
 
+                                // If a category already exists, automatically submit the accompanying value for checks
                                 if (category.equals("Hardness")) {
                                     playerCategoryValue = playerChoice.getHardness();
+                                    valueToBeat = Double.toString(playerCategoryValue);
                                 } else if (category.equals("Specific gravity")) {
                                     playerCategoryValue = playerChoice.getSpecificGravity();
+                                    valueToBeat = Double.toString(playerCategoryValue);
                                 } else if (category.equals("Cleavage")) {
                                     playerCategoryValue = playerChoice.getCleavage();
+                                    valueToBeat = cardData.getCleavageString(playerCategoryValue);
                                 } else if (category.equals("Crustal abundance")) {
                                     playerCategoryValue = playerChoice.getCrustalAbundance();
+                                    valueToBeat = cardData.getCrustalAbundanceString(playerCategoryValue);
                                 } else if (category.equals("Economic value")) {
                                     playerCategoryValue = playerChoice.getEconomicValue();
+                                    valueToBeat = cardData.getEconomicValueString(playerCategoryValue);
                                 }
 
+                                // This if check makes it possible to win a draw even if the card has the same value
+                                // The game can moving faster this way
                                 if (categoryValue > playerCategoryValue) {
                                     System.out.println("----------------------------------------" +
                                             "\nYour card's value in " + category + " is lower than " + table.name +
@@ -247,11 +301,16 @@ public class Game {
                                             "\n----------------------------------------");
                                     p.pCards.add(playerChoice);
                                 } else {
-                                    System.out.println("----------------------------------------" +
-                                            "\nYour card beat " + table.name + "!");
+                                    System.out.println("----------------------------------------");
+                                    if (!table.name.equals("No card")) {
+                                        System.out.println("Your card beat " + table.name + "!");
+                                    }
+                                    if (!table.getName().equals("No card")) {
+                                        deck.add(table);
+                                    }
                                     table = playerChoice;
                                     categoryValue = playerCategoryValue;
-                                    System.out.println("New value to beat for " + category + " is: " + categoryValue +
+                                    System.out.println("New value to beat for " + category + " is: " + valueToBeat +
                                             "\n----------------------------------------");
                                     turnValid = true;
                                 }
@@ -276,7 +335,7 @@ public class Game {
                 // If there is only 1 player left, end the game and announce the winners
                 if (playerCount == 1) {
                     running = false;
-                    break;
+                    break outer;
                 }
             }
         }
@@ -294,16 +353,26 @@ public class Game {
             // This while loop enables players to go back on their choice of cards
             // If they don't like their card's stats, they can go back and choose again
         while (!choiceValid) {
-            if (playerChoice != null) {
+            if (playerChoice != null && !playerChoice.getName().equals("[The Geophysicist & Magnetite]")) {
+
+                Boolean isTrumpCard = cardData.isTrumpCard(playerChoice.name);
+
                 System.out.println(playerChoice.getName() + "'s data:");
-                System.out.println("0 Hardness: " + playerChoice.getHardness() +
-                        "\n1 Specific gravity: " + playerChoice.getSpecificGravity() +
-                        "\n2 Cleavage: " + playerChoice.getCleavage() +
-                        "\n3 Crustal abundance: " + playerChoice.getCrustalAbundance() +
-                        "\n4 Economic value: " + playerChoice.getEconomicValue() +
-                        "\n5 Category (if trump card): " + playerChoice.getCategory());
+
+                if (isTrumpCard) {
+                    System.out.println("Category: " + playerChoice.getCategory());
+                } else {
+                    System.out.println("0 Hardness (averaged): " + playerChoice.getHardness() +
+                            "\n1 Specific gravity (averaged): " + playerChoice.getSpecificGravity() +
+                            "\n2 Cleavage: " + cardData.getCleavageString(playerChoice.getCleavage()) +
+                            "\n3 Crustal abundance: " + cardData.getCrustalAbundanceString(playerChoice.getCrustalAbundance()) +
+                            "\n4 Economic value: " + cardData.getEconomicValueString(playerChoice.getEconomicValue()));
+                }
+
                 System.out.print("Do you want to proceed with this card? Press 'y', or 'n' to proceed: ");
+
                 String choice = reader.next();
+
                 if (choice.equals("y")) {
                     choiceValid = true;
                 } else if (choice.equals("n")) {
@@ -311,7 +380,9 @@ public class Game {
                     p.pCards.add(playerChoice);
                     playerChoice = p.playerTurn();
                 } else {
-                    System.out.println("***Error: Please enter proper input***");
+                    System.out.println("\n" +
+                            "***Error: Please enter proper input***" +
+                    "\n");
                 }
             } else {
                 return playerChoice;

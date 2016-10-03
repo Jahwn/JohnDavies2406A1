@@ -52,10 +52,12 @@ public class XML_Reader {
 
             //This method reads the contents of the "<" tags
             public void characters(char ch[], int start, int length) throws SAXException {
+                // Get the title
                 if(keyDetected) {
                     CARD_DATA.add(new String(ch, start, length));
                     keyDetected = false;
                 }
+                // Get the value
                 if(stringDetected) {
                     CARD_DATA.add(new String(ch, start, length));
                     stringDetected = false;

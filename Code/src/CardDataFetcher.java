@@ -25,7 +25,7 @@ public class CardDataFetcher {
     }
 
     public Double getSpecificGravityValue(String value) {
-        double specificGravity = 0;
+        double specificGravity;
         List<Double> data = new ArrayList<Double>();
         Matcher m = Pattern.compile("(?!=\\d\\.\\d\\.)([\\d.]+)").matcher(value);
         while(m.find()) {
@@ -60,6 +60,15 @@ public class CardDataFetcher {
 
         return crustalAbundance;
     }
+    public String getCrustalAbundanceString(Double value) {
+        String crustalAbundance = "null";
+        ArrayList<String> data = new ArrayList<String>(
+                Arrays.asList("ultratrace", "trace", "low", "moderate", "high", "very high"));
+        if (value != null) {
+            crustalAbundance = data.get(value.intValue());
+        }
+        return crustalAbundance;
+    }
 
     public Double getEconomicValue(String value) {
         Double economicValue = 0.0;
@@ -77,6 +86,16 @@ public class CardDataFetcher {
             economicValue = 5.0;
         }
 
+        return economicValue;
+    }
+
+    public String getEconomicValueString(Double value) {
+        String economicValue = "null";
+        ArrayList<String> data = new ArrayList<String>(
+                Arrays.asList("trivial", "low", "moderate", "high", "very high", "I'm rich!"));
+        if (value != null) {
+            economicValue = data.get(value.intValue());
+        }
         return economicValue;
     }
 
@@ -110,6 +129,17 @@ public class CardDataFetcher {
             cleavage = 12.0;
         } else if (value.equals("6 perfect")) {
             cleavage = 13.0;
+        }
+        return cleavage;
+    }
+    public String getCleavageString(Double value) {
+        String cleavage = "null";
+
+        ArrayList<String> data = new ArrayList<String>(
+                Arrays.asList("none", "poor/none", "1 poor", "2 poor", "1 good, 1 poor", "2 good", "3 good", "1 perfect",
+                        "1 perfect, 1 good", "1 perfect, 2 good", "2 perfect, 1 good", "3 perfect", "4 perfect", "6 perfect"));
+        if (value != null) {
+            cleavage = data.get(value.intValue());
         }
         return cleavage;
     }
