@@ -48,19 +48,6 @@ public class Game {
             players.add(new Player(n, new ArrayList<Card>()));
         }
 
-        for (Player p: players) {
-            if (p.playerNo == 2) {
-                for (Card c: deck) {
-                    if (c.getName().equals("The Geophysicist")) {
-                        p.pCards.add(c);
-                    }
-                    if (c.getName().equals(("Magnetite"))) {
-                        p.pCards.add(c);
-                    }
-                }
-            }
-        }
-
         // Assigning cards to players
         for (Player s: players) {
             while(s.pCards.size() < 8) {
