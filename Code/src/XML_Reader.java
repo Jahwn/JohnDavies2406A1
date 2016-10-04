@@ -11,6 +11,7 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.*;
 
 //Note: 11 strings in XML elements
@@ -72,6 +73,9 @@ public class XML_Reader {
 
         try {
             saxParser.parse("MstCards_151021.plist", handler);
+        } catch (UnknownHostException e) {
+            System.out.println("***Error: please check your internet connection***");
+            System.exit(0);
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (IOException e) {
